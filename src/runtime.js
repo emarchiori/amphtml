@@ -427,7 +427,7 @@ function installAutoLoadExtensions(extensions, ampdoc) {
 /**
  * A manager for documents in the multi-doc environment.
  */
-class MultidocManager {
+export class MultidocManager {
 
   /**
    * @param {!Window} win
