@@ -61,13 +61,20 @@ export class AmpDocumentRecommendations extends AMP.BaseElement {
   constructor(element) {
     super(element);
 
+    const ampDoc = this.getAmpDoc();
+
+    /** @private @const {!../../../src/service/viewer-impl.Viewer} */
+    this.viewer_ = Services.viewerForDoc(ampDoc);
+
+    const isSupported = !this.viewer_.isOvertakeHistory() ||
+        this.viewer_.hasCapability('activeDocumentChange');
+
     // TODO(emarchiori): Consider using a service instead of singleton.
-    if (activeInstance_) {
+    if (!isSupported || activeInstance_) {
       return;
     }
     activeInstance_ = this;
 
-    const ampDoc = this.getAmpDoc();
     installPositionObserverServiceForDoc(ampDoc);
 
     /** @private {?./config.AmpDocumentRecommendationsConfig} */
@@ -81,9 +88,6 @@ export class AmpDocumentRecommendations extends AMP.BaseElement {
 
     /** @private {boolean} */
     this.documentQueued_ = false;
-
-    /** @private @const {!../../../src/service/viewer-impl.Viewer} */
-    this.viewer_ = Services.viewerForDoc(ampDoc);
 
     /** @private {!../../../src/service/viewport/viewport-impl.Viewport} */
     this.viewport_ = Services.viewportForDoc(ampDoc);
