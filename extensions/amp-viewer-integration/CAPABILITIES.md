@@ -30,3 +30,4 @@ Viewers can communicate their supported "capabilities" to documents through the
 | `replaceUrl`          | `getReplaceUrl`       | Support for replacing the document URL with one provided by the viewer.|
 | `swipe`               | `touchstart`, `touchmove`, `touchend`| Forwards touch events from the document to the viewer.|
 | `xhrInterceptor`      | `xhr`                 | Proxies all XHRs through the viewer.      |
+| `activeDocumentChange`| `activeDocumentChange`| Support for updating the displayed title and URL path for the current document. Required to support the [amp-document-recommendations](https://github.com/ampproject/amphtml/tree/master/extensions/amp-document-recommendations) component.|
