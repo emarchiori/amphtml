@@ -289,15 +289,18 @@ export class NextPageService {
    * @private
    */
   scrollHandler_() {
+    console.log('SCROLLLLLL')
     if (this.documentQueued_) {
       return;
     }
+    console.log('Not queued');
 
     const viewportSize = this.viewport_.getSize();
     const viewportBox =
         layoutRectLtwh(0, 0, viewportSize.width, viewportSize.height);
     this.viewport_.getClientRectAsync(this.element_)
         .then(elementBox => {
+          console.log('Got box');
           if (this.documentQueued_) {
             return;
           }
@@ -305,6 +308,7 @@ export class NextPageService {
           const prerenderHeight =
               PRERENDER_VIEWPORT_COUNT * viewportSize.height;
           if (elementBox.bottom - viewportBox.bottom < prerenderHeight) {
+            console.log('APPPPPPPPENDING');
             this.documentQueued_ = true;
             this.appendNextArticle_();
           }

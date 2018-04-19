@@ -32,6 +32,7 @@ env => {
   let element;
   let nextPage;
   let xhrMock;
+  let positionObserverMock;
   let viewport;
   let sizes;
 
@@ -75,6 +76,14 @@ env => {
     nextPage.buildCallback();
 
     xhrMock = sandbox.mock(Services.xhrFor(win));
+    positionObserverMock =
+        sandbox.mock(getServiceForDoc(ampdoc, 'position-observer'));
+
+    sandbox.stub(Services.resourcesForDoc(ampdoc), 'mutateElement')
+        .callsFake((unused, mutator) => {
+          mutator();
+          return Promise.resolve();
+        });
   });
 
   afterEach(() => {
@@ -131,5 +140,63 @@ env => {
     yield macroTask();
     win.dispatchEvent(new Event('scroll'));
     yield macroTask();
+  });
+
+  it.skip('updates title/URL when the next document comes into view', function*() {
+    xhrMock.expects('fetchDocument')
+        .returns(Promise.resolve({
+          body() {
+            return examplePage;
+          },
+        }));
+
+    element.style.marginTop = '1000px';
+
+    // Trigger document fetch
+    // const viewportStub = sandbox.stub(viewport, 'getClientRectAsync');
+    // viewportStub.withArgs(element)
+    //     .onFirstCall()
+    //     .returns(
+    //         // 1x viewport away from end of content, to trigger next document
+    //         // fetch+render.
+    //         Promise.resolve(
+    //             layoutRectLtwh(0, 0, sizes.width, sizes.height * 2)))
+    //     .onSecondCall()
+    //     .returns(
+    //         // 4x viewports away from end of content, to stop any more articles
+    //         // from being fetched.
+    //         Promise.resolve(
+    //             layoutRectLtwh(0, 0, sizes.width, sizes.height * 5)));
+    // viewportStub.onFirstCall().returns(
+    //     // but this is gonna get called for multiple rec units... :/
+    //     Promise.resolve(layoutRectLtwh(0, 0, sizes.width, sizes.height * 2)));
+
+    // TODO do scroll to fetch document/render
+    // TODO assert current title
+    // TODO trigger a thing on positionobserver
+    //   OR stub out getClientRectAsync again and trigger some scrolls
+    // TODO assert new title
+    // TODO assert analytics?
+
+    win.scrollTo(0, 1000);
+    win.dispatchEvent(new Event('scroll'));
+    yield macroTask();
+    yield macroTask();
+
+    expect(doc.title).to.equal('');
+
+    win.scrollTo(0, 1200);
+    win.dispatchEvent(new Event('scroll'));
+    yield macroTask();
+    yield macroTask();
+    yield macroTask();
+    yield macroTask();
+    yield macroTask();
+
+    expect(doc.title).to.equal('Title 1');
+  });
+
+  it('hides position fixed elements from subsequent pages', () => {
+    // TODO
   });
 });
