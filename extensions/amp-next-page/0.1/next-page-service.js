@@ -185,16 +185,16 @@ export class NextPageService {
     return this.appendPageHandler_(container)
         .then(() => {
           return this.resources_.mutateElement(container, () => {
-            try {
+            // try {
               amp = this.multidocManager_.attachShadowDoc(
                   shadowRoot, doc, '', {});
               installStylesForDoc(amp.ampdoc, CSS, null, false, TAG);
 
               const body = amp.ampdoc.getBody();
               body.classList.add('i-amphtml-next-page-document');
-            } catch (e) {
-              // TODO(emarchiori): Handle loading errors.
-            }
+            // } catch (e) {
+            //   // TODO(emarchiori): Handle loading errors.
+            // }
           });
         })
         .then(() => amp);
@@ -290,15 +290,18 @@ export class NextPageService {
    * @private
    */
   scrollHandler_() {
+    console.log('SCROLLLLLL');
     if (this.documentQueued_) {
       return;
     }
+    console.log('Not queued');
 
     const viewportSize = this.viewport_.getSize();
     const viewportBox =
         layoutRectLtwh(0, 0, viewportSize.width, viewportSize.height);
     this.viewport_.getClientRectAsync(dev().assertElement(this.element_))
         .then(elementBox => {
+          console.log('Got box');
           if (this.documentQueued_) {
             return;
           }
@@ -306,6 +309,7 @@ export class NextPageService {
           const prerenderHeight =
               PRERENDER_VIEWPORT_COUNT * viewportSize.height;
           if (elementBox.bottom - viewportBox.bottom < prerenderHeight) {
+            console.log('APPPPPPPPENDING');
             this.documentQueued_ = true;
             this.appendNextArticle_();
           }
@@ -328,11 +332,13 @@ export class NextPageService {
     }
 
     if (position.relativePos === 'top') {
+      debugger;
       const documentRef = this.documentRefs_[i + 1];
       this.triggerAnalyticsEvent_('amp-next-page-scroll',
           documentRef.ampUrl, this.activeDocumentRef_.ampUrl);
       this.setActiveDocument_(documentRef);
     } else if (position.relativePos === 'bottom') {
+      debugger;
       const documentRef = this.documentRefs_[i];
       this.triggerAnalyticsEvent_('amp-next-page-scroll-back',
           documentRef.ampUrl, this.activeDocumentRef_.ampUrl);
