@@ -53,6 +53,26 @@ limitations under the License.
 </head>
   <body class="land-see">
 
+  <amp-animation id="recommendedSlideIn" layout="nodisplay">
+    <script type="application/json">
+      {
+        "duration": ".4s",
+        "easing": "ease-in",
+        "fill": "both",
+        "direction": "alternate",
+        "animations": [
+          {
+            "selector": ".land-see-recommended",
+            "delay": "calc(100ms * index())",
+            "keyframes": [
+              {"transform": "translateY(0)", "opacity": 1}
+            ]
+          }
+        ]
+      }
+    </script>
+  </amp-animation>
+
     <section class="land-see-story-detail relative mx-auto mb4 pt2">
       <div class="mx-auto center land-see-post-item land-see-post-item-wide land-see-story">
         <a class="land-see-post-category land-see-page-navigation underline caps max-width-1 pb1" href="stories.amp.html?category&#x3D;fashion#land-see-fashion">Travel</a>
@@ -125,6 +145,39 @@ limitations under the License.
               </li>
           </ul>
         </div>
+      </div>
+    </section>
+
+    <section class="land-see-popular-content mx-auto">
+      <h4 class="land-see-section-header ml1">Recommended</h4>
+      <div class="clearfix pt2">
+        <amp-list class="center justify-center" src="/examples/land-see/templates/api/recommended.json" height="460" layout="fixed-height">
+          <template type="amp-mustache">
+            <amp-position-observer on="enter:recommendedSlideIn.start" layout="nodisplay">
+            </amp-position-observer>
+            {{#land-see-category}}
+            <amp-carousel media="{{media-query}}" width="{{width}}" height="{{height}}" layout="{{layout}}" controls="" type="slides">
+              {{#story-slide}}
+              <div class="land-see-story-slide flex">
+                {{#story-post}}
+                <div class="mx1 col align-top {{post-classes}}">
+                  <a href="{{post-url}}" class="text-decoration-none">
+                    {{#image}}
+                    <amp-img class="land-see-post-image {{classes}}" alt="{{alt}}" media="{{media-query}}" width="{{width}}" height="{{height}}" layout="{{layout}}" src="{{src}}">
+                    </amp-img>
+                    {{/image}}
+                  </a>
+                  <a class="land-see-post-category land-see-page-navigation inline-block pt1 underline caps" href="{{post-category-url}}">{{post-category}}</a>
+                  <h4 class="land-see-post-title ampstart-title-sm pt1"><a class="text-decoration-none" href="{{post-url}}">{{post-title}}</a></h4>
+                  <p class="ampstart-caption pt1 pb3">{{post-copy}}</p>
+                </div>
+                {{/story-post}}
+              </div>
+              {{/story-slide}}
+            </amp-carousel>
+            {{/land-see-category}}
+          </template>
+        </amp-list>
       </div>
     </section>
 
