@@ -182,14 +182,6 @@ export class NextPageService {
       }
     }
 
-    // Drop any amp-analytics tags from the child doc. We want to reuse the
-    // parent config instead.
-    const analytics = doc.querySelectorAll('amp-analytics');
-    for (let i = 0; i < analytics.length; i++) {
-      const item = analytics[i];
-      removeElement(item);
-    }
-
     const amp =
         this.multidocManager_.attachShadowDoc(shadowRoot, doc, '', {});
     installStylesForDoc(amp.ampdoc, CSS, null, false, TAG);
